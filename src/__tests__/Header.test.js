@@ -1,16 +1,15 @@
-import "@testing-library/jest-dom";
+import "@testing-library/jest-dom"; // ← This must be included
+import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Header from "../components/Header";
 
 test("displays the toggle button", () => {
-  render(<Header />);
-  expect(screen.queryByText(/ Mode/)).toBeInTheDocument();
-});
+  const mockToggle = jest.fn();
+  render(<Header isDarkMode={false} onDarkModeClick={mockToggle} />);
 
-test("calls the onDarkModeClick callback prop when the button is clicked", () => {
-  const onDarkModeClick = jest.fn();
-  render(<Header onDarkModeClick={onDarkModeClick} />);
+  const button = screen.getByRole("button", { name: /light mode/i });
+  expect(button).toBeInTheDocument();
 
-  fireEvent.click(screen.queryByText(/ Mode/));
-  expect(onDarkModeClick).toHaveBeenCalled();
+  fireEvent.click(button);
+  expect(mockToggle).toHaveBeenCalledTimes(1);
 });
